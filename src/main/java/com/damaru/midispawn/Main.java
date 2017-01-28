@@ -5,14 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@SpringBootApplication
+
 public class Main extends Application {
 
-    private ConfigurableApplicationContext springContext;
+    private Logger log = LogManager.getLogger(Main.class);
+    private ApplicationContext springContext;
     private Parent rootNode;
 
     public static void main(final String[] args) {
@@ -21,9 +23,9 @@ public class Main extends Application {
 
     @Override
     public void init() throws Exception {
-        springContext = SpringApplication.run(Main.class);
+        springContext = new AnnotationConfigApplicationContext();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
-        fxmlLoader.setControllerFactory(springContext::getBean);
+        //fxmlLoader.setControllerFactory(springContext::getBean);
         rootNode = fxmlLoader.load();
     }
 
@@ -35,7 +37,7 @@ public class Main extends Application {
 
     @Override
     public void stop() throws Exception {
-        springContext.close();
+        log.debug("Called stop.");
     }
 
 }

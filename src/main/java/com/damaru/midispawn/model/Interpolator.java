@@ -16,7 +16,9 @@
  */
 package com.damaru.midispawn.model;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -24,7 +26,7 @@ import org.apache.log4j.Logger;
  */
 public class Interpolator extends Sequencer {
 
-    private static Logger log = Logger.getLogger(Interpolator.class);
+    private static Logger log = LogManager.getLogger(Interpolator.class);
     private double start;
     private double end;
     private double range;

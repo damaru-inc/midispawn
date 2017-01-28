@@ -14,7 +14,8 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Soundbank;
 import javax.sound.midi.Synthesizer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class MidiUtil {
     
-    private static final Logger log = Logger.getLogger(MidiUtil.class);
+    private static final Logger log = LogManager.getLogger(MidiUtil.class);
     private static Sequencer sequencer;
     private static Synthesizer synthesizer;
     

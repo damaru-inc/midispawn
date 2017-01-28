@@ -21,7 +21,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Tab;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.controlsfx.control.RangeSlider;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +40,7 @@ import java.util.ResourceBundle;
 @Component
 public class RangeController extends Tab implements Initializable {
 
-    Logger log = Logger.getLogger(RangeController.class);
+    Logger log = LogManager.getLogger(RangeController.class);
 
     @FXML
     RangeSlider pitchStart;

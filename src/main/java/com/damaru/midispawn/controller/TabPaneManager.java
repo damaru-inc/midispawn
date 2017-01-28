@@ -1,17 +1,30 @@
 package com.damaru.midispawn.controller;
 
+import javafx.fxml.Initializable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class TabPaneManager {
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    private final RangeController rangeController;
-    private final MelodyController melodyController;
+@Component
+public class TabPaneManager implements Initializable {
+
+    private RangeController rangeController;
+    private MelodyController melodyController;
+
+    public TabPaneManager() {
+
+    }
 
     @Autowired
     public TabPaneManager(RangeController rangeController, MelodyController melodyController) {
         this.rangeController = rangeController;
         this.melodyController = melodyController;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 }

@@ -1,7 +1,8 @@
 package com.damaru.midispawn.model;
 
 import javax.sound.midi.Sequence;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -9,7 +10,7 @@ import org.apache.log4j.Logger;
  */
 public class Score {
 
-    private static Logger log = Logger.getLogger(Score.class);
+    private static Logger log = LogManager.getLogger(Score.class);
     private int totalNotes;
 
     public void doSection(Generator generator, int seconds, RangeInterval keyInterval, RangeInterval durInterval, RangeInterval velInterval) throws Exception {
