@@ -10,6 +10,7 @@ import com.damaru.midispawn.midi.MidiUtil;
 import com.damaru.midispawn.model.Generator;
 import com.damaru.midispawn.model.RangeInterval;
 import com.damaru.midispawn.model.Score;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
@@ -19,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.Tab;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
 import org.springframework.stereotype.Component;
@@ -34,7 +36,7 @@ import java.util.ResourceBundle;
  * @author mike
  */
 @Component
-public class RangeController implements Initializable {
+public class RangeController extends Tab implements Initializable {
 
     Logger log = Logger.getLogger(RangeController.class);
 
@@ -105,7 +107,7 @@ public class RangeController implements Initializable {
     
     public void quit(ActionEvent event) {
         MidiUtil.close();
-        System.exit(0);
+        Platform.exit();
     }
     
     public void changeInstrument(Change<InstrumentValue> value) {
