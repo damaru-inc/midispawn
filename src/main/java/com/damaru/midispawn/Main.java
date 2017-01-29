@@ -1,11 +1,14 @@
 package com.damaru.midispawn;
 
+import com.damaru.midispawn.controller.MainController;
+import com.damaru.midispawn.midi.MidiUtil;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +21,8 @@ public class Main extends Application {
     private Logger log = LogManager.getLogger(Main.class);
     private AnnotationConfigApplicationContext springContext;
     private Parent rootNode;
+    @Autowired
+    MainController mainController;
 
     public static void main(final String[] args) {
         Application.launch(args);
@@ -39,6 +44,11 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         log.debug("start start");
         stage.setScene(new Scene(rootNode));
+        MainController controller = (MainController) springContext.getBean("mainController");
+        log.debug("controller: " + controller);
+        if (controller != null) {
+            controller.setRootNode(springContext, rootNode);
+        }
         stage.show();
         log.debug("start end");
     }
@@ -46,6 +56,8 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         log.debug("Called stop.");
+        MidiUtil.close();
+        Platform.exit();
     }
 
 }
