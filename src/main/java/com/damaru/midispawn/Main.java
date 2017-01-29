@@ -23,16 +23,20 @@ public class Main extends Application {
 
     @Override
     public void init() throws Exception {
+        log.debug("init start");
         springContext = new AnnotationConfigApplicationContext();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
-        //fxmlLoader.setControllerFactory(springContext::getBean);
+        fxmlLoader.setControllerFactory(springContext::getBean);
         rootNode = fxmlLoader.load();
+        log.debug("init end");
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        log.debug("start start");
         stage.setScene(new Scene(rootNode));
         stage.show();
+        log.debug("start end");
     }
 
     @Override
