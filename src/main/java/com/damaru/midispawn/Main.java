@@ -11,10 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
+@Configuration
+@ComponentScan("com.damaru.midispawn")
 public class Main extends Application {
 
     private Logger log = LogManager.getLogger(Main.class);
-    private ApplicationContext springContext;
+    private AnnotationConfigApplicationContext springContext;
     private Parent rootNode;
 
     public static void main(final String[] args) {
@@ -25,6 +27,8 @@ public class Main extends Application {
     public void init() throws Exception {
         log.debug("init start");
         springContext = new AnnotationConfigApplicationContext();
+        springContext.register(Main.class);
+        springContext.refresh();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         rootNode = fxmlLoader.load();
