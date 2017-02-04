@@ -14,11 +14,11 @@ public class Score {
     private int totalNotes;
 
     public void doSection(Generator generator, int seconds, RangeInterval keyInterval, RangeInterval durInterval, RangeInterval velInterval) throws Exception {
-        int numNotes = Interpolator.calculateNumSteps(durInterval, seconds * Generator.PPS);
+        int numNotes = InterpolatingSequenceGenerator.calculateNumSteps(durInterval, seconds * Generator.PPS);
         log.debug("seconds: " + seconds + " numNotes: " + numNotes);
-        RangeSequencer keySequencer = new RangeSequencer(numNotes, keyInterval);
-        RangeSequencer durSequencer = new RangeSequencer(numNotes, durInterval);
-        RangeSequencer velSequencer = new RangeSequencer(numNotes, velInterval);
+        RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, keyInterval);
+        RangeSequenceGenerator durSequencer = new RangeSequenceGenerator(numNotes, durInterval);
+        RangeSequenceGenerator velSequencer = new RangeSequenceGenerator(numNotes, velInterval);
         int len = 0;
         for (int i = 0; i < numNotes; i++) {
             int key = keySequencer.next();

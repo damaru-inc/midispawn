@@ -21,18 +21,18 @@ package com.damaru.midispawn.model;
  *
  * @author Michael Davis
  */
-public class RangeSequencer extends Sequencer {
-    private Interpolator highInterpolator;
-    private Interpolator lowInterpolator;
+public class RangeSequenceGenerator extends SequenceGenerator {
+    private InterpolatingSequenceGenerator highInterpolator;
+    private InterpolatingSequenceGenerator lowInterpolator;
 
-    public RangeSequencer(int numSteps, RangeInterval rangeInterval) {
+    public RangeSequenceGenerator(int numSteps, RangeInterval rangeInterval) {
         this(numSteps, rangeInterval.lowStart, rangeInterval.highStart, rangeInterval.lowEnd, rangeInterval.highEnd);
     }
     
-    public RangeSequencer(int numSteps, double lowStart, double highStart, double lowEnd, double highEnd) {
+    public RangeSequenceGenerator(int numSteps, double lowStart, double highStart, double lowEnd, double highEnd) {
         super(numSteps);
-        highInterpolator = new Interpolator(numSteps, highStart, highEnd);
-        lowInterpolator = new Interpolator(numSteps, lowStart, lowEnd);
+        highInterpolator = new InterpolatingSequenceGenerator(numSteps, highStart, highEnd);
+        lowInterpolator = new InterpolatingSequenceGenerator(numSteps, lowStart, lowEnd);
     }
 
     @Override

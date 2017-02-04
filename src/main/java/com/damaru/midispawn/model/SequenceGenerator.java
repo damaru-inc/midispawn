@@ -21,12 +21,12 @@ package com.damaru.midispawn.model;
  *
  * @author Michael Davis
  */
-public class Sequencer {
+public class SequenceGenerator {
 
-    private int numSteps;
-    private int currentStep;
+    protected int numSteps;
+    protected int currentStep;
 
-    public Sequencer(int numSteps) {
+    public SequenceGenerator(int numSteps) {
         this.numSteps = numSteps;
         currentStep = 0;
     }

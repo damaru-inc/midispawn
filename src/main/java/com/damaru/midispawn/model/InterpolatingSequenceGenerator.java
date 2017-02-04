@@ -24,9 +24,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Michael Davis
  */
-public class Interpolator extends Sequencer {
+public class InterpolatingSequenceGenerator extends SequenceGenerator {
 
-    private static Logger log = LogManager.getLogger(Interpolator.class);
+    private static Logger log = LogManager.getLogger(InterpolatingSequenceGenerator.class);
     private double start;
     private double end;
     private double range;
@@ -48,14 +48,14 @@ public class Interpolator extends Sequencer {
         return ret;
     }
 
-    public static Interpolator createInterpolator(double start, double end, double targetTotal) {
-        Interpolator ret = null;
+    public static InterpolatingSequenceGenerator createInterpolator(double start, double end, double targetTotal) {
+        InterpolatingSequenceGenerator ret = null;
         int numSteps = calculateNumSteps(start, end, targetTotal);
-        ret = new Interpolator(numSteps, start, end);
+        ret = new InterpolatingSequenceGenerator(numSteps, start, end);
         return ret;
     }
 
-    public Interpolator(int numSteps, double start, double end) {
+    public InterpolatingSequenceGenerator(int numSteps, double start, double end) {
         super(numSteps);
         this.start = start;
         this.end = end;

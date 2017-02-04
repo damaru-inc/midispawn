@@ -137,8 +137,8 @@ public class Generator {
         log.debug("method2 start =================================================================");
         int ret = 0;
         int numNotes = 200;
-        Interpolator lengthInterpolator = new Interpolator(numNotes, 300, 20);
-        RangeSequencer keySequencer = new RangeSequencer(numNotes, 20, 60, 97, 103);
+        InterpolatingSequenceGenerator lengthInterpolator = new InterpolatingSequenceGenerator(numNotes, 300, 20);
+        RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, 20, 60, 97, 103);
         for (int i = 0; i < numNotes; i++) {
             int length = lengthInterpolator.next();
             int key = keySequencer.next();
@@ -150,8 +150,8 @@ public class Generator {
 
         log.debug("-------------------------------------------------------------------------------- " + secs);
         numNotes /= 1.5;
-        lengthInterpolator = new Interpolator(numNotes, 20, 300);
-        keySequencer = new RangeSequencer(numNotes, 97, 103, 20, 60);
+        lengthInterpolator = new InterpolatingSequenceGenerator(numNotes, 20, 300);
+        keySequencer = new RangeSequenceGenerator(numNotes, 97, 103, 20, 60);
         int ret2 = 0;
         for (int i = 0; i < numNotes; i++) {
             int length = lengthInterpolator.next();
@@ -169,9 +169,9 @@ public class Generator {
         log.debug("method3 start =================================================================");
         int ret = 0;
         double targetSecs = 8.0;
-        Interpolator lengthInterpolator = Interpolator.createInterpolator(300, 20, targetSecs * PPS);
+        InterpolatingSequenceGenerator lengthInterpolator = InterpolatingSequenceGenerator.createInterpolator(300, 20, targetSecs * PPS);
         int numNotes = lengthInterpolator.getNumSteps();
-        RangeSequencer keySequencer = new RangeSequencer(numNotes, 20, 60, 97, 103);
+        RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, 20, 60, 97, 103);
         for (int i = 0; i < numNotes; i++) {
             int length = lengthInterpolator.next();
             int key = keySequencer.next();
@@ -183,8 +183,8 @@ public class Generator {
 
         log.debug("-------------------------------------------------------------------------------- " + secs + " " + numNotes);
         targetSecs = 4.0;
-        lengthInterpolator = Interpolator.createInterpolator(20, 300, targetSecs * PPS);
-        keySequencer = new RangeSequencer(numNotes, 97, 103, 20, 60);
+        lengthInterpolator = InterpolatingSequenceGenerator.createInterpolator(20, 300, targetSecs * PPS);
+        keySequencer = new RangeSequenceGenerator(numNotes, 97, 103, 20, 60);
         int ret2 = 0;
         numNotes = lengthInterpolator.getNumSteps();
         for (int i = 0; i < numNotes; i++) {
@@ -205,7 +205,7 @@ public class Generator {
         int len = 0;
         int numNotes = 10;
         int length = PPS;
-        RangeSequencer keySequencer = new RangeSequencer(numNotes, 20, 60, 97, 103);
+        RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, 20, 60, 97, 103);
         for (int i = 0; i < numNotes; i++) {
             int key = keySequencer.next();
             log.debug("key: " + key + " length: " + length);
@@ -224,10 +224,10 @@ public class Generator {
             int velStartLow, int velStartHigh, int velEndLow, int velEndHigh) throws Exception {
         double averageTempoStart = (tempoStartLow + tempoStartHigh) / 2.0;
         double averageTempoEnd = (tempoEndLow + tempoEndHigh) / 2.0;
-        int numNotes = Interpolator.calculateNumSteps(averageTempoStart, averageTempoEnd, secs * PPS);
-        RangeSequencer keySequencer = new RangeSequencer(numNotes, pitchStartLow, pitchStartHigh, pitchEndLow, pitchEndHigh);
-        RangeSequencer tempoSequencer = new RangeSequencer(numNotes, tempoStartLow, tempoStartHigh, tempoEndLow, tempoEndHigh);
-        RangeSequencer velocitySequencer = new RangeSequencer(numNotes, velStartLow, velStartHigh, velEndLow, velEndHigh);
+        int numNotes = InterpolatingSequenceGenerator.calculateNumSteps(averageTempoStart, averageTempoEnd, secs * PPS);
+        RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, pitchStartLow, pitchStartHigh, pitchEndLow, pitchEndHigh);
+        RangeSequenceGenerator tempoSequencer = new RangeSequenceGenerator(numNotes, tempoStartLow, tempoStartHigh, tempoEndLow, tempoEndHigh);
+        RangeSequenceGenerator velocitySequencer = new RangeSequenceGenerator(numNotes, velStartLow, velStartHigh, velEndLow, velEndHigh);
 
         for (int i = 0; i < numNotes; i++) {
             int key = keySequencer.next();
