@@ -9,6 +9,7 @@ import java.util.List;
 public class ClassicDurationGenerator extends SequenceGenerator {
 
     private static Logger log = LogManager.getLogger(ClassicDurationGenerator.class);
+	// foo
 
     private int beatsPerBar;
     private int pulsesPerBeat;
@@ -66,12 +67,8 @@ public class ClassicDurationGenerator extends SequenceGenerator {
 
     public int getRandomAndTruncate(int maxDuration, int pulsesLeftInBar) {
         int max = Math.min(maxDuration, pulsesLeftInBar);
-        int val = Rand.getIntInRange(1, max);
-
-        if (val > maxDuration) {
-            val = maxDuration;
-        }
-
-        return val;
+        int ret = Rand.getIntInRange(1, max);
+        log.debug(String.format("maxDuration: %2d pulsesLeftInBar: %2d max: %d ret: %d", maxDuration, pulsesLeftInBar, max, ret ));
+        return ret;
     }
 }
