@@ -25,7 +25,6 @@ public class Generator {
     public static final double LEGATO = 0.9;
     private Sequence sequence;
     private Track track;
-    private Random random = new Random();
     private long currentTick = 0;
 
     public Generator() throws Exception {
