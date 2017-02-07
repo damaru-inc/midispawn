@@ -26,6 +26,8 @@ public class MidiUtil {
     private static final Logger log = LogManager.getLogger(MidiUtil.class);
     private static Sequencer sequencer;
     private static Synthesizer synthesizer;
+    public final static int PPQ = 480; // pulses per quarter note
+    public final static int MIDDLE_C = 60; // midi note number.
     
     public static ObservableList<MidiDevice.Info> getMidiDevices() {
         ObservableList<MidiDevice.Info> ret = FXCollections.observableArrayList();

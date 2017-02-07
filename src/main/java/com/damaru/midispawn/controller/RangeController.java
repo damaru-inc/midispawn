@@ -87,7 +87,7 @@ public class RangeController extends Tab implements Initializable {
             
             //MidiUtil.getMidiDevices();
         } catch (MidiUnavailableException ex) {
-	log.error(ex);
+	        log.error(ex);
         }
     }
 

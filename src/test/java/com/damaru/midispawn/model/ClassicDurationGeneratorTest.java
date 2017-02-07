@@ -10,16 +10,14 @@ public class ClassicDurationGeneratorTest {
 
     @Test
     public void testDuration() {
-	// foo
-        int beatsPerBar = 4;
+        int beatsPerBar = 16;
         int pulsesPerBeat = 4;
-        int max = 8;
+        int max = 16;
 
         ClassicDurationGenerator gen = new ClassicDurationGenerator(beatsPerBar, pulsesPerBeat, max);
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 64; i++) {
             int dur = gen.next();
-            log.info(String.format("foo i: %3d dur: %2d", i, dur));
-            System.out.println(String.format("foo i: %3d dur: %2d", i, dur));
+            log.info("dur: " + dur);
         }
     }
 }
