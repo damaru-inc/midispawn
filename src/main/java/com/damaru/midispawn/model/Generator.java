@@ -4,20 +4,12 @@
  */
 package com.damaru.midispawn.model;
 
-import java.io.File;
-import java.util.Random;
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Track;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author mike
- */
+import javax.sound.midi.*;
+import java.io.File;
+
 public class Generator {
     private static Logger log = LogManager.getLogger(Generator.class);
     public static final int PPQ = 480;
@@ -30,6 +22,12 @@ public class Generator {
     public Generator() throws Exception {
         sequence = new Sequence(Sequence.PPQ, PPQ);
         track = sequence.createTrack();
+        int[] supported = MidiSystem.getMidiFileTypes();
+        log.debug("Midi types supported: ");
+        for (int i = 0; i < supported.length; i++) {
+            log.debug("" + supported[i]);
+        }
+        log.debug("resolution: " + sequence.getResolution() + " tick length: " + sequence.getTickLength() + " micro: " + sequence.getMicrosecondLength());
     }
 
     public void createTrack() {
@@ -39,6 +37,31 @@ public class Generator {
     public void setProgram(int program) throws Exception {
         ShortMessage message = new ShortMessage();
         message.setMessage(ShortMessage.PROGRAM_CHANGE, program, program);
+        MidiEvent event = new MidiEvent(message, currentTick);
+        track.add(event);
+    }
+
+    public void setTempo(int bpm) throws Exception {
+        double beatsPerSecond = bpm / 60.0;
+        double secondsPerBeat = 1 / beatsPerSecond;
+        long microsecsPerBeat = (long) (secondsPerBeat * 1_000_000);
+        long mask = 256 * 256;
+        log.debug("mask: " + mask + " mics: " + microsecsPerBeat);
+        int val1 = (int) (microsecsPerBeat / mask);
+        microsecsPerBeat = microsecsPerBeat - (val1 * 256 * 256);
+        long mask2 = 256;
+        int val2 = (int) (microsecsPerBeat / mask2);
+        int val3 = (int) (microsecsPerBeat - (val2 * 256));
+        long val = (val1 * 256 * 256) + (val2 * 256) + val3;
+        log.debug("val1: " + val1 + " val2: " + val2 + " val3: " + val3 + " val: " + val);
+        MetaMessage message = new MetaMessage();
+        byte[] data = new byte[5];
+        data[0] = 0x51;
+        data[1] = 0x03;
+        data[2] = (byte) val1;
+        data[3] = (byte) val2;
+        data[4] = (byte) val3;
+        message.setMessage(0x51, data, 5);
         MidiEvent event = new MidiEvent(message, currentTick);
         track.add(event);
     }

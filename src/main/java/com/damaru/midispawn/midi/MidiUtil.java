@@ -54,7 +54,8 @@ public class MidiUtil {
             if (sequencer == null) {
                 sequencer = MidiSystem.getSequencer();
                 MidiDevice.Info mi = sequencer.getDeviceInfo();
-                log.debug("sequencer: " + mi);
+                float bpm = sequencer.getTempoInBPM();
+                log.debug("sequencer: " + mi + " bpm: " + bpm);
                 sequencer.open();
             }
             sequencer.setSequence(sequence);
