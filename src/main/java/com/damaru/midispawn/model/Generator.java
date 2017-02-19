@@ -30,6 +30,11 @@ public class Generator {
         log.debug("resolution: " + sequence.getResolution() + " tick length: " + sequence.getTickLength() + " micro: " + sequence.getMicrosecondLength());
     }
 
+    public void clear() {
+        sequence.deleteTrack(track);
+        track = sequence.createTrack();
+    }
+
     public void createTrack() {
         track = sequence.createTrack();
     }

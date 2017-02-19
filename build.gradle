@@ -3,14 +3,14 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 ext {
-	mainClassName = 'com.damaru.midispawn.Main'
+	mainClass = 'com.damaru.midispawn.Main'
 }
 
 jar {
 	baseName = 'midispawn'
 	version = '0.0.1-SNAPSHOT'
 	manifest {
-		attributes "Main-Class": "$mainClassName"
+		attributes "Main-Class": "$mainClass"
 	}
 
 	from {
@@ -31,3 +31,4 @@ dependencies {
 	compile('org.apache.logging.log4j:log4j-core:2.8')
 	compile ('junit:junit:4.12')
 }
+

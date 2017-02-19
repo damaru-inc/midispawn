@@ -26,9 +26,10 @@ public class MidiUtil {
     private static final Logger log = LogManager.getLogger(MidiUtil.class);
     private static Sequencer sequencer;
     private static Synthesizer synthesizer;
+    private static final ObservableList<InstrumentValue> instruments = FXCollections.observableArrayList();
     public final static int PPQ = 480; // pulses per quarter note
     public final static int MIDDLE_C = 60; // midi note number.
-    
+
     public static ObservableList<MidiDevice.Info> getMidiDevices() {
         ObservableList<MidiDevice.Info> ret = FXCollections.observableArrayList();
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) {
@@ -39,14 +40,15 @@ public class MidiUtil {
     }
     
     public static ObservableList<InstrumentValue> getInstruments() throws MidiUnavailableException {
-        ObservableList<InstrumentValue> ret = FXCollections.observableArrayList();
-        synthesizer = MidiSystem.getSynthesizer();
-        Soundbank sb = synthesizer.getDefaultSoundbank();
-        for (Instrument i : sb.getInstruments()) {
-            ret.add(new InstrumentValue(i));
-            log.debug("instrument: " + i.getName() + " " + i.getPatch().getBank() + " " + i.getPatch().getProgram());
+        if (instruments.isEmpty()) {
+            synthesizer = MidiSystem.getSynthesizer();
+            Soundbank sb = synthesizer.getDefaultSoundbank();
+            for (Instrument i : sb.getInstruments()) {
+                instruments.add(new InstrumentValue(i));
+                //log.debug("instrument: " + i.getName() + " " + i.getPatch().getBank() + " " + i.getPatch().getProgram());
+            }
         }
-        return ret;
+        return instruments;
     }
     
     public static void playSequence(Sequence sequence) {

@@ -25,8 +25,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.controlsfx.control.RangeSlider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import java.net.URL;
@@ -38,7 +40,7 @@ import java.util.ResourceBundle;
  * @author mike
  */
 @Component
-public class RangeController extends Tab implements Initializable {
+public class RangeController extends MidiController {
 
     Logger log = LogManager.getLogger(RangeController.class);
 
@@ -56,45 +58,34 @@ public class RangeController extends Tab implements Initializable {
     RangeSlider velocityEnd;
     @FXML
     Slider seconds;
-    @FXML
-    ComboBox instrument;
+
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            log.debug("url: " + url);
-            ObservableList<InstrumentValue> instruments = MidiUtil.getInstruments();
-            instruments.addListener(new InstrumentChangeListener());
-            instrument.setItems(instruments);
-            instrument.getSelectionModel().select(0);
-            SpinnerValueFactory.IntegerSpinnerValueFactory programFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory.IntegerSpinnerValueFactory(0, 127);
-            pitchStart.setHighValue(60);
-            pitchStart.setLowValue(40);
-            pitchEnd.setHighValue(90);
-            pitchEnd.setLowValue(70);
-            velocityStart.setHighValue(60);
-            velocityStart.setLowValue(40);
-            velocityEnd.setHighValue(90);
-            velocityEnd.setLowValue(70);
-            durationStart.setHighValue(600);
-            durationStart.setLowValue(400);
-            durationEnd.setHighValue(600);
-            durationEnd.setLowValue(400);
-            
-            
-            //MidiUtil.getMidiDevices();
-        } catch (MidiUnavailableException ex) {
-	        log.error(ex);
-        }
+        log.debug("url: " + url);
+        SpinnerValueFactory.IntegerSpinnerValueFactory programFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory.IntegerSpinnerValueFactory(0, 127);
+        pitchStart.setHighValue(60);
+        pitchStart.setLowValue(40);
+        pitchEnd.setHighValue(90);
+        pitchEnd.setLowValue(70);
+        velocityStart.setHighValue(60);
+        velocityStart.setLowValue(40);
+        velocityEnd.setHighValue(90);
+        velocityEnd.setLowValue(70);
+        durationStart.setHighValue(600);
+        durationStart.setLowValue(400);
+        durationEnd.setHighValue(600);
+        durationEnd.setLowValue(400);
     }
 
-    public void generate(ActionEvent event) throws MidiUnavailableException, Exception {
+    @Override
+    public void generate() throws Exception {
         Generator generator = new Generator();
-        InstrumentValue ins = (InstrumentValue) instrument.getValue();
-        int prog = ins.getProgram();
+        InstrumentValue instrument = mainController.getInstrument();
+        int prog = instrument.getProgram();
         log.debug("program: " + prog);
         generator.setProgram(prog);
         RangeInterval noteInterval = new RangeInterval(pitchStart.getLowValue(), pitchStart.getHighValue(), pitchEnd.getLowValue(), pitchEnd.getHighValue());
@@ -106,23 +97,7 @@ public class RangeController extends Tab implements Initializable {
         Sequence seq = generator.getSequence();
         MidiUtil.playSequence(seq);
     }
-    
-    public void quit(ActionEvent event) {
-        MidiUtil.close();
-        Platform.exit();
-    }
-    
-    public void changeInstrument(Change<InstrumentValue> value) {
-    }
-    
-    class InstrumentChangeListener implements ListChangeListener {
 
-        @Override
-        public void onChanged(Change c) {
-            log.debug("Changed instrument: " + c);
-        }
-        
-    }
 
 //    public void playSong(ActionEvent event) throws MidiUnavailableException, Exception {
 //        log.debug("event: " + event);
@@ -149,4 +124,15 @@ public class RangeController extends Tab implements Initializable {
 //
 //        MidiUtil.playSequence(sequence);
 //    }
+
+    @Override
+    public void play() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void stop() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
