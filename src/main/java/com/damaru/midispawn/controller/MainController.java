@@ -90,7 +90,7 @@ public class MainController implements Initializable {
             try {
                 module = fxmlLoader.load();
             } catch (IOException e) {
-                log.error("Failed to load module resourceName");
+                log.error("Failed to load module resourceName", e);
                 quit(null);
             }
             ObservableList<Node> children = rootNode.getChildren();

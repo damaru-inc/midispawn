@@ -8,8 +8,8 @@ public class MelodyGenerator extends SequenceGenerator {
 
     private static Logger log = LogManager.getLogger(MelodyGenerator.class);
 
-    int minNote = MidiUtil.MIDDLE_C - 24;
-    int maxNote = MidiUtil.MIDDLE_C + 24;
+    private int minNote = MidiUtil.MIDDLE_C - 24;
+    private int maxNote = MidiUtil.MIDDLE_C + 24;
 
     // index from -7 to +7 - given an interval, looks up the likelyhood of being chosen.
     private int[] intervalProbabilities =
@@ -59,4 +59,19 @@ public class MelodyGenerator extends SequenceGenerator {
         currentNote += interval;
         return currentNote;
     }
+
+    public void setMinNote(int minNote) {
+        this.minNote = minNote;
+    }
+
+    public void setMaxNote(int maxNote) {
+        this.maxNote = maxNote;
+    }
+
+    public void setIntervalProbabilities(int[] intervalProbabilities) {
+        this.intervalProbabilities = intervalProbabilities;
+        init();
+    }
+    
+    
 }
