@@ -30,16 +30,18 @@ import java.util.logging.Level;
  * Created by mike on 2017-01-29.
  */
 @Component
+@SuppressWarnings("rawtypes")
 public class MainController implements Initializable {
 
     Logger log = LogManager.getLogger(MainController.class);
     private VBox rootNode;
     @FXML
-    ComboBox moduleCombo;
+    ComboBox<String> moduleCombo;
     @FXML
-    ComboBox instrumentCombo;
+    ComboBox<InstrumentValue> instrumentCombo;
     Generator generator = null;
     private MidiController controller;
+    private ApplicationContext springContext;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,7 +67,7 @@ public class MainController implements Initializable {
 
     public void setRootNode(ApplicationContext springContext, Parent rootNode) throws IOException {
         this.rootNode = (VBox) rootNode;
-
+        this.springContext = springContext;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Range.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         Node rangeModule = fxmlLoader.load();
@@ -82,10 +84,11 @@ public class MainController implements Initializable {
 
         @Override
         public void changed(ObservableValue ov, String old, String newOne) {
-            log.debug(String.format("changed: %s %s " + ov, old, newOne));
+            log.debug(String.format("changed: %s %s ", old, newOne));
             String resourceName = "/fxml/" + newOne + ".fxml";
             log.debug("Changing module to " + resourceName);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(resourceName));
+            fxmlLoader.setControllerFactory(springContext::getBean);
             Node module = null;
             try {
                 module = fxmlLoader.load();

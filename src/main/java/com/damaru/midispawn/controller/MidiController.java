@@ -17,7 +17,7 @@ public abstract class MidiController implements Initializable {
     public MidiController() {
         try {
             generator = new Generator();
-            log.debug("generator initialized.");
+            log.debug("generator initialized: " + this.getClass());
         } catch (Exception e) {
             log.error("Can't initialize the Generator", e);
         }        

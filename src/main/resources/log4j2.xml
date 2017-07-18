@@ -7,6 +7,7 @@
     </Appenders>
     <Loggers>
         <Logger name="com.damaru" level="debug"/>
+        <Logger name="com.damaru.midispawn.model" level="info"/>
         <Root level="warn">
             <AppenderRef ref="Console"/>
         </Root>
