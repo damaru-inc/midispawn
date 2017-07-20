@@ -49,8 +49,8 @@ public class MainController implements Initializable {
         log.debug("init start");
         try {
             ObservableList<String> modules = FXCollections.observableArrayList();
-            modules.add("Range");
             modules.add("Melody");
+            modules.add("Range");
             moduleCombo.setItems(modules);
             moduleCombo.getSelectionModel().select(0);
             moduleCombo.valueProperty().addListener(new ModuleChangeListener());
@@ -68,7 +68,7 @@ public class MainController implements Initializable {
     public void setRootNode(ApplicationContext springContext, Parent rootNode) throws IOException {
         this.rootNode = (VBox) rootNode;
         this.springContext = springContext;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Range.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Melody.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         Node rangeModule = fxmlLoader.load();
         ObservableList<Node> children = this.rootNode.getChildren();
@@ -119,5 +119,18 @@ public class MainController implements Initializable {
             log.error("Error generating midi", ex);
         }
     }
+    
+    public void play(ActionEvent event) {
+        try {
+            controller.play();
+        } catch (Exception ex) {
+            log.error("Error generating midi", ex);
+        }
+    }
+    
+    public void saveMidiFile(ActionEvent event) {
+        controller.saveMidiFile();
+    }
+
 
 }

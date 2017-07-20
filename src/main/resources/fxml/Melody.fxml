@@ -133,6 +133,6 @@
             <Insets right="10.0" />
          </padding>
       </Label>
-      <Slider fx:id="notes" blockIncrement="1.0" majorTickUnit="10.0" max="120.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" value="10.0" GridPane.columnIndex="2" GridPane.columnSpan="15" GridPane.rowIndex="2" />
+      <Slider fx:id="notes" blockIncrement="1.0" majorTickUnit="10.0" max="120.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" value="5.0" GridPane.columnIndex="2" GridPane.columnSpan="15" GridPane.rowIndex="2" />
    </children>
 </GridPane>

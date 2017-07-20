@@ -75,8 +75,7 @@ public class MelodyController extends MidiController {
     }
 
     public void generate() throws MidiUnavailableException, Exception {
-        generator.clear();
-        
+        super.generate();
         int numNotes = notes.valueProperty().intValue();
         MelodyGenerator mg = new MelodyGenerator(numNotes);
         int[] probs = {
@@ -99,25 +98,13 @@ public class MelodyController extends MidiController {
         mg.setIntervalProbabilities(probs);
         ClassicDurationGenerator durationGenerator = new ClassicDurationGenerator(4, 4, 8);
         
-                for (int i = 0; i < numNotes; i++) {
+        for (int i = 0; i < numNotes; i++) {
             int note = mg.next();
             int sixteenthNotes = durationGenerator.next();
             int duration = sixteenthNotes * pulsesPerSixteenthNote;
             generator.addNote(note, duration, 100);
         }
                 
-        Sequence seq = generator.getSequence();
-        MidiUtil.playSequence(seq);
-
     }
 
-    @Override
-    public void play() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void stop() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

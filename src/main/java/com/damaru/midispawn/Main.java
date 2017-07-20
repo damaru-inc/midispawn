@@ -37,6 +37,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         rootNode = fxmlLoader.load();
+        MidiUtil.getMidiDevices(); // just to display them.
         log.debug("init end");
     }
 
