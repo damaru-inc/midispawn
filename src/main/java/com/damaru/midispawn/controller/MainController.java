@@ -1,9 +1,20 @@
 package com.damaru.midispawn.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
 import com.damaru.midispawn.midi.InstrumentValue;
+import com.damaru.midispawn.midi.MidiDeviceValue;
 import com.damaru.midispawn.midi.MidiUtil;
 import com.damaru.midispawn.model.Generator;
-import java.io.File;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,17 +28,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javax.sound.midi.MidiDevice;
-
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -45,7 +45,7 @@ public class MainController implements Initializable {
     @FXML
     ComboBox<InstrumentValue> instrumentCombo;
     @FXML
-    ComboBox<MidiDevice.Info> deviceCombo;
+    ComboBox<MidiDeviceValue> deviceCombo;
     Generator generator = null;
     private MidiController controller;
     private ApplicationContext springContext;
@@ -65,7 +65,7 @@ public class MainController implements Initializable {
             ObservableList<InstrumentValue> instruments = MidiUtil.getInstruments();
             instrumentCombo.setItems(instruments);
             instrumentCombo.getSelectionModel().select(0);
-            ObservableList<MidiDevice.Info> devices = MidiUtil.getMidiDevices();
+            ObservableList<MidiDeviceValue> devices = MidiUtil.getMidiDevices();
             deviceCombo.setItems(devices);
             deviceCombo.getSelectionModel().select(0);
 
@@ -84,7 +84,7 @@ public class MainController implements Initializable {
         fxmlLoader.setControllerFactory(springContext::getBean);
         Node rangeModule = fxmlLoader.load();
         ObservableList<Node> children = this.rootNode.getChildren();
-        children.set(1, rangeModule);
+        children.set(2, rangeModule);
         controller = fxmlLoader.getController();
         this.stage = stage;
     }
@@ -110,7 +110,7 @@ public class MainController implements Initializable {
                 quit(null);
             }
             ObservableList<Node> children = rootNode.getChildren();
-            children.set(1, module);
+            children.set(2, module);
             controller = fxmlLoader.getController();
         }
 
@@ -119,14 +119,15 @@ public class MainController implements Initializable {
     public void quit(ActionEvent event) {
         MidiUtil.close();
         Platform.exit();
+        System.exit(0);
     }
 
     public InstrumentValue getInstrument() {
         return (InstrumentValue) instrumentCombo.getValue();
     }
     
-    public MidiDevice.Info getMidiDevice() {
-    	return (MidiDevice.Info) deviceCombo.getValue();
+    public MidiDeviceValue getMidiDevice() {
+    	return (MidiDeviceValue) deviceCombo.getValue();
     }
     
     public void generate(ActionEvent event) {
@@ -153,7 +154,31 @@ public class MainController implements Initializable {
         try {
             controller.play();
         } catch (Exception ex) {
-            log.error("Error generating midi", ex);
+            log.error("Error playing midi", ex);
+        }
+    }
+    
+    public void stop(ActionEvent event) {
+        try {
+            controller.stop();
+        } catch (Exception ex) {
+            log.error("Error stopping midi", ex);
+        }
+    }
+
+    public void playDirect(ActionEvent event) {
+        try {
+            controller.playDirect();
+        } catch (Exception ex) {
+            log.error("Error playing midi", ex);
+        }
+    }
+    
+    public void stopDirect(ActionEvent event) {
+        try {
+            controller.stopDirect();
+        } catch (Exception ex) {
+            log.error("Error stopping midi", ex);
         }
     }
 

@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
 import org.springframework.stereotype.Component;
 
+import com.damaru.midispawn.midi.MidiDeviceValue;
 import com.damaru.midispawn.midi.MidiUtil;
 import com.damaru.midispawn.model.ClassicDurationGenerator;
 import com.damaru.midispawn.model.MelodyGenerator;
@@ -74,9 +75,8 @@ public class MelodyController extends MidiController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
-
-    public void generate() throws MidiUnavailableException, Exception {
-        super.generate();
+    
+    private MelodyGenerator setupMelodyGenerator() throws Exception {
         int numNotes = notes.valueProperty().intValue();
         MelodyGenerator mg = new MelodyGenerator(numNotes);
         int[] probs = {
@@ -97,6 +97,13 @@ public class MelodyController extends MidiController {
             int_p_7.valueProperty().intValue()
         };
         mg.setIntervalProbabilities(probs);
+        return mg;
+    }
+
+    public void generate() throws MidiUnavailableException, Exception {
+        super.generate();
+        int numNotes = notes.valueProperty().intValue();
+        MelodyGenerator mg = setupMelodyGenerator();
         ClassicDurationGenerator durationGenerator = new ClassicDurationGenerator(4, 4, 8);
         
         for (int i = 0; i < numNotes; i++) {
@@ -105,7 +112,14 @@ public class MelodyController extends MidiController {
             int duration = sixteenthNotes * pulsesPerSixteenthNote;
             generator.addNote(note, duration, 100);
         }
-                
+    }
+    
+    public void playDirect() throws Exception {
+        MelodyGenerator mg = setupMelodyGenerator();
+        ClassicDurationGenerator dg = new ClassicDurationGenerator(4, 4, 8);
+        MidiDeviceValue val = mainController.getMidiDevice();
+        future = midiPlayer.play(val.getMidiDevice(), mg, dg);
+        log.debug("playDirect started.");
     }
 
 }

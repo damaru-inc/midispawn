@@ -2,6 +2,9 @@ package com.damaru.midispawn.model;
 
 import javax.sound.midi.Sequence;
 import org.apache.logging.log4j.Logger;
+
+import com.damaru.midispawn.midi.MidiUtil;
+
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -14,7 +17,7 @@ public class Score {
     private int totalNotes;
 
     public void doSection(Generator generator, int seconds, RangeInterval keyInterval, RangeInterval durInterval, RangeInterval velInterval) throws Exception {
-        int numNotes = InterpolatingSequenceGenerator.calculateNumSteps(durInterval, seconds * Generator.PPS);
+        int numNotes = InterpolatingSequenceGenerator.calculateNumSteps(durInterval, seconds * MidiUtil.PPS);
         log.debug("seconds: " + seconds + " numNotes: " + numNotes);
         RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, keyInterval);
         RangeSequenceGenerator durSequencer = new RangeSequenceGenerator(numNotes, durInterval);
@@ -27,7 +30,7 @@ public class Score {
             generator.addNote(key, length, velocity);
             len += length;
         }
-        double secs = len / (double) Generator.PPS;
+        double secs = len / (double) MidiUtil.PPS;
         log.debug("length: " + len + " secs: " + secs);
         totalNotes += numNotes;
     }

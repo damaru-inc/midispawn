@@ -7,20 +7,19 @@ package com.damaru.midispawn.model;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.damaru.midispawn.midi.MidiUtil;
+
 import javax.sound.midi.*;
 import java.io.File;
 
 public class Generator {
     private static Logger log = LogManager.getLogger(Generator.class);
-    public static final int PPQ = 480;
-    public static final int PPS = PPQ * 2; // pulses per second
-    public static final double LEGATO = 0.9;
     private Sequence sequence;
     private Track track;
     private long currentTick = 0;
 
     public Generator() throws Exception {
-        sequence = new Sequence(Sequence.PPQ, PPQ);
+        sequence = new Sequence(Sequence.PPQ, MidiUtil.PPQ);
         track = sequence.createTrack();
         int[] supported = MidiSystem.getMidiFileTypes();
         log.debug("Midi types supported: ");
@@ -73,7 +72,7 @@ public class Generator {
     }
 
     public void addNote() throws Exception {
-        addNote(PPQ);
+        addNote(MidiUtil.PPQ);
     }
 
     public void addNote(int length) throws Exception {
@@ -87,32 +86,13 @@ public class Generator {
     }
 
     public void addNote(int key, int length, int velocity) throws Exception {
-        int duration = (int) (length * LEGATO);
+        int duration = (int) (length * MidiUtil.LEGATO);
         log.debug("key: " + key + " length: " + length + " vel: " + velocity + " currentTick: " + currentTick + " end: " + (currentTick + duration) + " duration: " + duration);
-        track.add(createNoteOnEvent(key, velocity, currentTick));
-        track.add(createNoteOffEvent(key, currentTick + duration));
+        track.add(MidiUtil.createNoteOnEvent(key, velocity, currentTick));
+        track.add(MidiUtil.createNoteOffEvent(key, currentTick + duration));
         currentTick += length;
     }
 
-    private static MidiEvent createNoteOnEvent(int key, int velocity, long tick) throws Exception {
-        //log.debug("key: " + key + " vel: " + velocity + " tick: " + tick);
-        return createNoteEvent(ShortMessage.NOTE_ON, key, velocity, tick);
-    }
-
-    private static MidiEvent createNoteOffEvent(int key, long tick) throws Exception {
-        return createNoteEvent(ShortMessage.NOTE_OFF, key, 0, tick);
-    }
-
-    private static MidiEvent createNoteEvent(int command, int key, int velocity, long tick) throws Exception {
-        //log.debug("command: " + command + " key: " + key + " vel: " + velocity + " tick: " + tick);
-        ShortMessage message = new ShortMessage();
-        message.setMessage(command,
-                0, // always on channel 1
-                key,
-                velocity);
-        MidiEvent event = new MidiEvent(message, tick);
-        return event;
-    }
 
     public static int transpose(int source, int sourceMin, int sourceMax, int targetMin, int targetMax, boolean reverse) {
         int ret = 0;
@@ -178,7 +158,7 @@ public class Generator {
             generator.addNote(key, length);
             ret += length;
         }
-        double secs = ret / (double) PPS;
+        double secs = ret / (double) MidiUtil.PPS;
 
         log.debug("-------------------------------------------------------------------------------- " + secs);
         numNotes /= 1.5;
@@ -192,7 +172,7 @@ public class Generator {
             generator.addNote(key, length);
             ret2 += length;
         }
-        secs = ret2 / (double) PPS;
+        secs = ret2 / (double) MidiUtil.PPS;
         log.debug("method2 end =================================================================== " + secs);
         return ret + ret2;
     }
@@ -201,7 +181,7 @@ public class Generator {
         log.debug("method3 start =================================================================");
         int ret = 0;
         double targetSecs = 8.0;
-        InterpolatingSequenceGenerator lengthInterpolator = InterpolatingSequenceGenerator.createInterpolator(300, 20, targetSecs * PPS);
+        InterpolatingSequenceGenerator lengthInterpolator = InterpolatingSequenceGenerator.createInterpolator(300, 20, targetSecs * MidiUtil.PPS);
         int numNotes = lengthInterpolator.getNumSteps();
         RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, 20, 60, 97, 103);
         for (int i = 0; i < numNotes; i++) {
@@ -211,11 +191,11 @@ public class Generator {
             generator.addNote(key, length);
             ret += length;
         }
-        double secs = ret / (double) PPS;
+        double secs = ret / (double) MidiUtil.PPS;
 
         log.debug("-------------------------------------------------------------------------------- " + secs + " " + numNotes);
         targetSecs = 4.0;
-        lengthInterpolator = InterpolatingSequenceGenerator.createInterpolator(20, 300, targetSecs * PPS);
+        lengthInterpolator = InterpolatingSequenceGenerator.createInterpolator(20, 300, targetSecs * MidiUtil.PPS);
         keySequencer = new RangeSequenceGenerator(numNotes, 97, 103, 20, 60);
         int ret2 = 0;
         numNotes = lengthInterpolator.getNumSteps();
@@ -226,7 +206,7 @@ public class Generator {
             generator.addNote(key, length);
             ret2 += length;
         }
-        secs = ret2 / (double) PPS;
+        secs = ret2 / (double) MidiUtil.PPS;
         log.debug("method3 end =================================================================== " + secs + " " + numNotes);
         return ret + ret2;
     }
@@ -236,7 +216,7 @@ public class Generator {
 
         int len = 0;
         int numNotes = 10;
-        int length = PPS;
+        int length = MidiUtil.PPS;
         RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, 20, 60, 97, 103);
         for (int i = 0; i < numNotes; i++) {
             int key = keySequencer.next();
@@ -245,7 +225,7 @@ public class Generator {
             len += length;
         }
         generator.writeFile("ten.mid");
-        double secs = len / (double) PPS;
+        double secs = len / (double) MidiUtil.PPS;
         String format = "len1: %d %2.4f";
         String msg = String.format(format, len, secs);
         log.debug(msg);
@@ -256,7 +236,7 @@ public class Generator {
             int velStartLow, int velStartHigh, int velEndLow, int velEndHigh) throws Exception {
         double averageTempoStart = (tempoStartLow + tempoStartHigh) / 2.0;
         double averageTempoEnd = (tempoEndLow + tempoEndHigh) / 2.0;
-        int numNotes = InterpolatingSequenceGenerator.calculateNumSteps(averageTempoStart, averageTempoEnd, secs * PPS);
+        int numNotes = InterpolatingSequenceGenerator.calculateNumSteps(averageTempoStart, averageTempoEnd, secs * MidiUtil.PPS);
         RangeSequenceGenerator keySequencer = new RangeSequenceGenerator(numNotes, pitchStartLow, pitchStartHigh, pitchEndLow, pitchEndHigh);
         RangeSequenceGenerator tempoSequencer = new RangeSequenceGenerator(numNotes, tempoStartLow, tempoStartHigh, tempoEndLow, tempoEndHigh);
         RangeSequenceGenerator velocitySequencer = new RangeSequenceGenerator(numNotes, velStartLow, velStartHigh, velEndLow, velEndHigh);

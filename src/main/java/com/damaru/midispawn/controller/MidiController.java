@@ -2,8 +2,8 @@ package com.damaru.midispawn.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Future;
 
-import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Sequence;
@@ -15,17 +15,22 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.damaru.midispawn.midi.InstrumentValue;
+import com.damaru.midispawn.midi.MidiDeviceValue;
+import com.damaru.midispawn.midi.MidiPlayer;
 import com.damaru.midispawn.midi.MidiUtil;
 import com.damaru.midispawn.model.Generator;
 
 import javafx.fxml.Initializable;
 
-public class MidiController implements Initializable {
+public abstract class MidiController implements Initializable {
 
     private static final Logger log = LogManager.getLogger(MidiController.class);
     protected Generator generator;
     @Autowired
     protected MainController mainController;
+    @Autowired 
+    protected MidiPlayer midiPlayer;
+    protected Future<String> future;
 
     public MidiController() {
         try {
@@ -67,12 +72,21 @@ public class MidiController implements Initializable {
             MidiEvent event = new MidiEvent(message, 0);
             track.add(event);
             
-            MidiDevice.Info info = mainController.getMidiDevice();
-            MidiUtil.playSequence(seq, info);
+            MidiDeviceValue val = mainController.getMidiDevice();
+            MidiUtil.playSequence(seq, val);
         }
     }
 
-    public void stop() throws Exception {
+    public void stop() {
+        MidiUtil.stopSequence();
+    }
+    
+    public abstract void playDirect() throws Exception;
+
+    public void stopDirect() {
+        if (future != null) {
+            future.cancel(true);
+        }
     }
 
     public void generate() throws Exception {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 mike.
+ * Copyright 2017 Michael Davis.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import javax.sound.midi.Instrument;
 
 /**
  *
- * @author mike
+ * @author Michael Davis.
  */
 public class InstrumentValue {
     private final Instrument instrument;

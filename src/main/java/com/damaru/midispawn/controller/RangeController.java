@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
 import org.springframework.stereotype.Component;
 
+import com.damaru.midispawn.midi.MidiDeviceValue;
 import com.damaru.midispawn.model.RangeInterval;
 import com.damaru.midispawn.model.Score;
 
@@ -76,6 +77,16 @@ public class RangeController extends MidiController {
         score.doSection(generator, (int) seconds.getValue(), noteInterval, durInterval, velInterval);
     }
 
+    @Override
+    public void playDirect() throws Exception {
+        RangeInterval noteInterval = new RangeInterval(pitchStart.getLowValue(), pitchStart.getHighValue(), pitchEnd.getLowValue(), pitchEnd.getHighValue());
+        RangeInterval durInterval = new RangeInterval(durationStart.getLowValue(), durationStart.getHighValue(), durationEnd.getLowValue(), durationEnd.getHighValue());
+        RangeInterval velInterval = new RangeInterval(velocityStart.getLowValue(), velocityStart.getHighValue(), velocityEnd.getLowValue(), velocityEnd.getHighValue());
+        log.debug("seconds: " + seconds.getValue());
+        MidiDeviceValue val = mainController.getMidiDevice();
+        future = midiPlayer.play(val.getMidiDevice(), (int) seconds.getValue(), noteInterval, durInterval, velInterval);
+    }
+
 
 //    public void playSong(ActionEvent event) throws MidiUnavailableException, Exception {
 //        log.debug("event: " + event);
@@ -103,9 +114,5 @@ public class RangeController extends MidiController {
 //        MidiUtil.playSequence(sequence);
 //    }
 
-    @Override
-    public void stop() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
 }
