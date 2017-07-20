@@ -129,6 +129,10 @@ public class Generator {
 
     public void writeFile(String fileName) throws Exception {
         File outputFile = new File(fileName);
+        writeFile(outputFile);
+    }
+
+    public void writeFile(File outputFile) throws Exception {
         MidiSystem.write(sequence, 1, outputFile);
     }
 

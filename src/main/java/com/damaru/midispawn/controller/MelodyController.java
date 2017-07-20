@@ -5,6 +5,7 @@
  */
 package com.damaru.midispawn.controller;
 
+import com.damaru.midispawn.midi.InstrumentValue;
 import com.damaru.midispawn.midi.MidiUtil;
 import com.damaru.midispawn.model.ClassicDurationGenerator;
 import com.damaru.midispawn.model.Generator;
@@ -76,6 +77,10 @@ public class MelodyController extends MidiController {
 
     public void generate() throws MidiUnavailableException, Exception {
         generator.clear();
+        InstrumentValue instrument = mainController.getInstrument();
+        int prog = instrument.getProgram();
+        log.debug("program: " + prog);
+        generator.setProgram(prog);
         
         int numNotes = notes.valueProperty().intValue();
         MelodyGenerator mg = new MelodyGenerator(numNotes);

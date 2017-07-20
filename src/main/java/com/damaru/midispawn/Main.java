@@ -45,9 +45,9 @@ public class Main extends Application {
         log.debug("start start");
         stage.setScene(new Scene(rootNode));
         MainController controller = (MainController) springContext.getBean("mainController");
-        log.debug("controller: " + controller);
+        log.debug("controller: " + controller + " mainController: " + mainController);
         if (controller != null) {
-            controller.setRootNode(springContext, rootNode);
+            controller.setRootNode(springContext, rootNode, stage);
         }
         stage.show();
         log.debug("start end");

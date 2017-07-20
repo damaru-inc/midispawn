@@ -3,6 +3,7 @@ package com.damaru.midispawn.controller;
 import com.damaru.midispawn.midi.InstrumentValue;
 import com.damaru.midispawn.midi.MidiUtil;
 import com.damaru.midispawn.model.Generator;
+import java.io.File;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,7 +25,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * Created by mike on 2017-01-29.
@@ -40,6 +42,7 @@ public class MainController implements Initializable {
     ComboBox instrumentCombo;
     Generator generator = null;
     private MidiController controller;
+    private Stage stage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -47,8 +50,8 @@ public class MainController implements Initializable {
         log.debug("init start");
         try {
             ObservableList<String> modules = FXCollections.observableArrayList();
-            modules.add("Range");
             modules.add("Melody");
+            modules.add("Range");
             moduleCombo.setItems(modules);
             moduleCombo.getSelectionModel().select(0);
             moduleCombo.valueProperty().addListener(new ModuleChangeListener());
@@ -63,15 +66,16 @@ public class MainController implements Initializable {
         log.debug("init end");
     }
 
-    public void setRootNode(ApplicationContext springContext, Parent rootNode) throws IOException {
+    public void setRootNode(ApplicationContext springContext, Parent rootNode, Stage stage) throws IOException {
         this.rootNode = (VBox) rootNode;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Range.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Melody.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         Node rangeModule = fxmlLoader.load();
         ObservableList<Node> children = this.rootNode.getChildren();
         children.set(1, rangeModule);
         controller = fxmlLoader.getController();
+        this.stage = stage;
     }
 
     public void moduleSelected() {
@@ -116,5 +120,19 @@ public class MainController implements Initializable {
             log.error("Error generating midi", ex);
         }
     }
+    
+    public void save(ActionEvent event) {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Midi File");
+            File file = fileChooser.showSaveDialog(stage);
+            Generator generator = controller.getGenerator();
+            generator.writeFile(file);
+        } catch (Exception ex) {
+            log.error("Error generating midi", ex);
+        }
+    }
+    
+    
 
 }
