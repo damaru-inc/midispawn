@@ -9,7 +9,6 @@ import java.util.List;
 public class ClassicDurationGenerator extends SequenceGenerator {
 
     private static Logger log = LogManager.getLogger(ClassicDurationGenerator.class);
-	// foo
 
     private int beatsPerBar;
     private int pulsesPerBeat;

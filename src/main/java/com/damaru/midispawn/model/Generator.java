@@ -33,6 +33,7 @@ public class Generator {
     public void clear() {
         sequence.deleteTrack(track);
         track = sequence.createTrack();
+        currentTick = 0;
     }
 
     public void createTrack() {
@@ -42,7 +43,7 @@ public class Generator {
     public void setProgram(int program) throws Exception {
         ShortMessage message = new ShortMessage();
         message.setMessage(ShortMessage.PROGRAM_CHANGE, program, program);
-        MidiEvent event = new MidiEvent(message, currentTick);
+        MidiEvent event = new MidiEvent(message, currentTick++);
         track.add(event);
     }
 

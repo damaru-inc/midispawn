@@ -5,22 +5,22 @@
  */
 package com.damaru.midispawn.controller;
 
-import com.damaru.midispawn.midi.InstrumentValue;
-import com.damaru.midispawn.midi.MidiUtil;
-import com.damaru.midispawn.model.ClassicDurationGenerator;
-import com.damaru.midispawn.model.Generator;
-import com.damaru.midispawn.model.MelodyGenerator;
-import javafx.fxml.FXML;
-import javafx.scene.control.Slider;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javax.sound.midi.MidiUnavailableException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
 import org.springframework.stereotype.Component;
 
-import javax.sound.midi.MidiUnavailableException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import javax.sound.midi.Sequence;
+import com.damaru.midispawn.midi.MidiUtil;
+import com.damaru.midispawn.model.ClassicDurationGenerator;
+import com.damaru.midispawn.model.MelodyGenerator;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Slider;
 
 /**
  * FXML Controller class
@@ -76,12 +76,7 @@ public class MelodyController extends MidiController {
     }
 
     public void generate() throws MidiUnavailableException, Exception {
-        generator.clear();
-        InstrumentValue instrument = mainController.getInstrument();
-        int prog = instrument.getProgram();
-        log.debug("program: " + prog);
-        generator.setProgram(prog);
-        
+        super.generate();
         int numNotes = notes.valueProperty().intValue();
         MelodyGenerator mg = new MelodyGenerator(numNotes);
         int[] probs = {
@@ -104,25 +99,13 @@ public class MelodyController extends MidiController {
         mg.setIntervalProbabilities(probs);
         ClassicDurationGenerator durationGenerator = new ClassicDurationGenerator(4, 4, 8);
         
-                for (int i = 0; i < numNotes; i++) {
+        for (int i = 0; i < numNotes; i++) {
             int note = mg.next();
             int sixteenthNotes = durationGenerator.next();
             int duration = sixteenthNotes * pulsesPerSixteenthNote;
             generator.addNote(note, duration, 100);
         }
                 
-        Sequence seq = generator.getSequence();
-        MidiUtil.playSequence(seq);
-
     }
 
-    @Override
-    public void play() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void stop() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

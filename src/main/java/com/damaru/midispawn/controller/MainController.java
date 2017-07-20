@@ -25,6 +25,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javax.sound.midi.MidiDevice;
+
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -32,16 +35,20 @@ import javafx.stage.Stage;
  * Created by mike on 2017-01-29.
  */
 @Component
+@SuppressWarnings("rawtypes")
 public class MainController implements Initializable {
 
     Logger log = LogManager.getLogger(MainController.class);
     private VBox rootNode;
     @FXML
-    ComboBox moduleCombo;
+    ComboBox<String> moduleCombo;
     @FXML
-    ComboBox instrumentCombo;
+    ComboBox<InstrumentValue> instrumentCombo;
+    @FXML
+    ComboBox<MidiDevice.Info> deviceCombo;
     Generator generator = null;
     private MidiController controller;
+    private ApplicationContext springContext;
     private Stage stage;
 
     @Override
@@ -58,6 +65,10 @@ public class MainController implements Initializable {
             ObservableList<InstrumentValue> instruments = MidiUtil.getInstruments();
             instrumentCombo.setItems(instruments);
             instrumentCombo.getSelectionModel().select(0);
+            ObservableList<MidiDevice.Info> devices = MidiUtil.getMidiDevices();
+            deviceCombo.setItems(devices);
+            deviceCombo.getSelectionModel().select(0);
+
             generator = new Generator();
         } catch (Exception e) {
             log.error("Can't initialize MainController", e);
@@ -68,7 +79,7 @@ public class MainController implements Initializable {
 
     public void setRootNode(ApplicationContext springContext, Parent rootNode, Stage stage) throws IOException {
         this.rootNode = (VBox) rootNode;
-
+        this.springContext = springContext;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Melody.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         Node rangeModule = fxmlLoader.load();
@@ -86,10 +97,11 @@ public class MainController implements Initializable {
 
         @Override
         public void changed(ObservableValue ov, String old, String newOne) {
-            log.debug(String.format("changed: %s %s " + ov, old, newOne));
+            log.debug(String.format("changed: %s %s ", old, newOne));
             String resourceName = "/fxml/" + newOne + ".fxml";
             log.debug("Changing module to " + resourceName);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(resourceName));
+            fxmlLoader.setControllerFactory(springContext::getBean);
             Node module = null;
             try {
                 module = fxmlLoader.load();
@@ -113,6 +125,10 @@ public class MainController implements Initializable {
         return (InstrumentValue) instrumentCombo.getValue();
     }
     
+    public MidiDevice.Info getMidiDevice() {
+    	return (MidiDevice.Info) deviceCombo.getValue();
+    }
+    
     public void generate(ActionEvent event) {
         try {
             controller.generate();
@@ -121,7 +137,7 @@ public class MainController implements Initializable {
         }
     }
     
-    public void save(ActionEvent event) {
+    public void saveMidiFile(ActionEvent event) {
         try {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Midi File");
@@ -132,7 +148,13 @@ public class MainController implements Initializable {
             log.error("Error generating midi", ex);
         }
     }
-    
-    
+
+    public void play(ActionEvent event) {
+        try {
+            controller.play();
+        } catch (Exception ex) {
+            log.error("Error generating midi", ex);
+        }
+    }
 
 }

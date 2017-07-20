@@ -6,15 +6,17 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damaru.midispawn.controller.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damaru.midispawn.controller.MainController">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <Button mnemonicParsing="false" onAction="#quit" text="Quit" />
             <ComboBox fx:id="moduleCombo" onAction="#moduleSelected" prefWidth="150.0" />
             <ComboBox fx:id="instrumentCombo" prefWidth="150.0" />
+            <ComboBox fx:id="deviceCombo" prefWidth="150.0" />
             <Button mnemonicParsing="false" onAction="#generate" text="Generate" />
-            <Button mnemonicParsing="false" onAction="#save" text="Save" />
+            <Button mnemonicParsing="false" onAction="#play" text="Play" />
+            <Button mnemonicParsing="false" onAction="#saveMidiFile" text="Save" />
          </children>
       </HBox>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" />

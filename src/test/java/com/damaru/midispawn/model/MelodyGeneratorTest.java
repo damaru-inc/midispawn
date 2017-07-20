@@ -30,7 +30,7 @@ public class MelodyGeneratorTest {
         generator.writeFile("melody.mid");
         Sequence seq = generator.getSequence();
         log.debug("resolution: " + seq.getResolution() + " tick length: " + seq.getTickLength() + " micro: " + seq.getMicrosecondLength());
-        MidiUtil.playSequence(seq);
+        MidiUtil.playSequence(seq, null);
         MidiUtil.close();
     }
 }
