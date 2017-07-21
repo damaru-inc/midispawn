@@ -48,10 +48,9 @@ public class MidiPlayer {
                 if (tick >= nextEvent) {
                     if (notePlaying) {
                         ShortMessage message = MidiUtil.createNoteOffMessage(key, 120);
-                        receiver.send(message, -1);
+                        receiver.send(message, (long) tick);
                         nextEvent = nextNoteOn;
                         notePlaying = false;
-                        log.debug("off: " + tick);
                     } else {
                         key = mg.next();
                         int sixteenthNotes = dg.next();
@@ -61,7 +60,7 @@ public class MidiPlayer {
                         nextNoteOn = tick + duration;
                         notePlaying = true;
                         ShortMessage message = MidiUtil.createNoteOnMessage(key, 120);
-                        receiver.send(message, -1);
+                        receiver.send(message,  (long) tick);
                     }
                 }
                 Thread.sleep(INTERVAL);
@@ -69,6 +68,10 @@ public class MidiPlayer {
             }
         } catch (InterruptedException e) {
             log.debug("interrupted....." + tick);
+            if (notePlaying) {
+                ShortMessage message = MidiUtil.createNoteOffMessage(key, 120);
+                receiver.send(message, -1);            	
+            }
             receiver.close();
         }
 
@@ -104,7 +107,6 @@ public class MidiPlayer {
                         receiver.send(message, -1);
                         nextEvent = nextNoteOn;
                         notePlaying = false;
-                        log.debug("off: " + tick);
                     } else {
                         key = keySequencer.next();
                         int duration = durSequencer.next();
@@ -122,11 +124,13 @@ public class MidiPlayer {
             }
         } catch (InterruptedException e) {
             log.debug("interrupted....." + tick);
+            if (notePlaying) {
+                ShortMessage message = MidiUtil.createNoteOffMessage(key, 120);
+                receiver.send(message, -1);            	
+            }
             receiver.close();
         }
 
         return new AsyncResult<String>("finished " + tick);
-    }
-
-    
+    }    
 }
